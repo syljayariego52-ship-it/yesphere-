@@ -1,0 +1,1149 @@
+<!doctype html>
+<html lang="fil">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>YESphere</title>
+<meta name="description" content="YESphere — student list monitoring ng YES-O, Bataraza National High School, S.Y. 2026–2027">
+<meta name="theme-color" content="#0e583e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="YESphere">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/favicon-48.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#16a34a; --green-d:#0e583e; --green-l:#e7f6ec;
+  --blue:#1565c0; --blue-d:#0b3f8a; --blue-l:#e6effb;
+  --yellow:#d99a06; --yellow-l:#fdf3d8;
+  --red:#d6413a; --red-l:#fbe6e5;
+  --bg:#f1f6f3; --card:#ffffff; --text:#0f2419; --muted:#5d7166; --line:#dbe6df;
+  --shadow:0 1px 2px rgba(16,40,28,.06),0 6px 20px rgba(16,40,28,.06);
+  --radius:18px; --fs:16px;
+  --grad:linear-gradient(135deg,#0e583e 0%,#127a52 45%,#1565c0 100%);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1712; --card:#13221b; --text:#e6f1ea; --muted:#9db3a6; --line:#24382d;
+    --green-l:#173525; --blue-l:#16263f; --yellow-l:#3a2f12; --red-l:#3d1d1b;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1712; --card:#13221b; --text:#e6f1ea; --muted:#9db3a6; --line:#24382d;
+  --green-l:#173525; --blue-l:#16263f; --yellow-l:#3a2f12; --red-l:#3d1d1b;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+}
+:root[data-size="large"]{ --fs:18.5px; }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:var(--fs);line-height:1.45;min-height:100vh;overscroll-behavior-y:contain}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* ---------- Splash ---------- */
+#splash{position:fixed;inset:0;z-index:100;background:var(--grad);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;color:#fff;transition:opacity .5s ease, visibility .5s}
+#splash.out{opacity:0;visibility:hidden}
+.splash-logo{position:relative;width:min(52vw,220px);aspect-ratio:1}
+.splash-logo img{width:100%;height:100%;border-radius:50%;animation:pop .9s cubic-bezier(.2,1.4,.4,1) both;box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.splash-logo::before,.splash-logo::after{content:"";position:absolute;inset:-10px;border-radius:50%;border:2px solid rgba(255,255,255,.45);animation:ring 1.6s ease-out .35s infinite}
+.splash-logo::after{animation-delay:.9s}
+.splash-title{font-size:2.1rem;font-weight:800;letter-spacing:.5px;animation:rise .7s ease .45s both}
+.splash-sub{font-size:.95rem;opacity:.9;animation:rise .7s ease .6s both;text-align:center}
+.splash-bar{width:120px;height:4px;border-radius:4px;background:rgba(255,255,255,.25);overflow:hidden;animation:rise .7s ease .7s both}
+.splash-bar i{display:block;height:100%;width:40%;background:#fff;border-radius:4px;animation:load 1.1s ease-in-out infinite}
+@keyframes pop{from{transform:scale(.4) rotate(-25deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes ring{from{transform:scale(.9);opacity:.9}to{transform:scale(1.35);opacity:0}}
+@keyframes rise{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+@keyframes load{0%{transform:translateX(-100%)}100%{transform:translateX(260%)}}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition:none!important}}
+
+/* ---------- Header ---------- */
+header.top{position:sticky;top:0;z-index:20;background:var(--grad);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 12px 12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 14px rgba(0,0,0,.15)}
+header.top img{width:42px;height:42px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.6)}
+.brand{flex:1;min-width:0}
+.brand b{display:block;font-size:1.25rem;font-weight:800;letter-spacing:.3px;line-height:1.15}
+.brand > span{display:block;font-size:.78rem;opacity:.88;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:0;background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center;flex:none}
+.icon-btn:active{background:rgba(255,255,255,.28)}
+.pill-mode{font-size:.68rem;font-weight:700;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:999px;margin-left:6px;vertical-align:2px;letter-spacing:.4px}
+
+/* ---------- Menu ---------- */
+#menu{position:fixed;top:calc(60px + env(safe-area-inset-top));right:10px;z-index:40;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.22);min-width:230px;padding:6px;transform-origin:top right;animation:menuIn .16s ease}
+@keyframes menuIn{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+#menu button{display:flex;align-items:center;gap:12px;width:100%;padding:12px;border:0;background:none;border-radius:10px;text-align:left;font-weight:600}
+#menu button:active,#menu button:hover{background:var(--green-l)}
+#menu button svg{color:var(--green);flex:none}
+#menu .msub{display:block;font-weight:500;font-size:.78rem;color:var(--muted)}
+#menu hr{border:0;border-top:1px solid var(--line);margin:4px 6px}
+#scrim{position:fixed;inset:0;z-index:35}
+
+/* ---------- Layout ---------- */
+main{max-width:720px;margin:0 auto;padding:16px 16px calc(96px + env(safe-area-inset-bottom))}
+.view{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+h2.page{font-size:1.35rem;margin:4px 0 2px;font-weight:800}
+p.lead{margin:0 0 14px;color:var(--muted);font-size:.92rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:14px}
+.card h3{margin:0 0 10px;font-size:1.02rem;font-weight:800;display:flex;align-items:center;gap:8px}
+label.fl{display:block;font-size:.82rem;font-weight:700;color:var(--muted);margin:0 0 6px;text-transform:uppercase;letter-spacing:.5px}
+.field{margin-bottom:12px}
+select,input[type=text],input[type=tel],input[type=password],textarea{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);outline:none;min-height:50px}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2316a34a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+select:focus,input:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(22,163,74,.15)}
+select:disabled{opacity:.55}
+textarea{min-height:130px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:380px){.row2{grid-template-columns:1fr}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:12px;padding:13px 18px;font-weight:700;min-height:48px;background:var(--green);color:#fff;transition:transform .08s, filter .15s}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5;pointer-events:none}
+.btn.blue{background:var(--blue)}
+.btn.ghost{background:var(--green-l);color:var(--green-d)}
+:root[data-theme="dark"] .btn.ghost{color:#86e0a8}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.ghost{color:#86e0a8}}
+.btn.red{background:var(--red)}
+.btn.line{background:transparent;border:1.5px solid var(--line);color:var(--text)}
+.btn.block{width:100%}
+.btn.sm{min-height:38px;padding:8px 12px;font-size:.88rem;border-radius:10px}
+.grad-btn{background:var(--grad)}
+
+/* status badges */
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap}
+.badge::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.b-red{background:var(--red-l);color:var(--red)}
+.b-yellow{background:var(--yellow-l);color:var(--yellow)}
+.b-green{background:var(--green-l);color:var(--green)}
+.b-blue{background:var(--blue-l);color:var(--blue)}
+
+/* status banner in workplace */
+.sec-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;background:var(--bg);border:1px dashed var(--line);margin-top:4px}
+.sec-head b{font-size:1.02rem}
+.sec-head small{display:block;color:var(--muted);font-size:.8rem}
+.locked{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:14px;background:var(--green-l);margin-top:12px}
+.locked svg{flex:none;color:var(--green);margin-top:2px}
+.locked p{margin:0;font-size:.92rem}
+
+/* student entry */
+.adder{display:grid;grid-template-columns:1fr 92px 52px;gap:8px}
+.adder .btn{padding:0;min-height:50px}
+.seg{display:flex;background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:3px;gap:3px}
+.seg button{flex:1;border:0;background:none;border-radius:9px;font-weight:700;padding:8px 0;color:var(--muted)}
+.seg button.on{background:var(--card);color:var(--green);box-shadow:var(--shadow)}
+.counts{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 8px}
+.chip{font-size:.8rem;font-weight:700;padding:6px 10px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+.slist{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.slist li{display:flex;align-items:center;gap:10px;padding:10px 8px 10px 12px;border-top:1px solid var(--line);background:var(--card)}
+.slist li:first-child{border-top:0}
+.slist .n{width:28px;color:var(--muted);font-size:.82rem;font-weight:700;text-align:right;flex:none}
+.slist .nm{flex:1;min-width:0;word-break:break-word}
+.slist .sx{font-size:.75rem;font-weight:800;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex:none;border:0}
+.sx.M{background:var(--blue-l);color:var(--blue)} .sx.F{background:#fde7f1;color:#c2185b} .sx.U{background:var(--bg);color:var(--muted)}
+.slist .rm{border:0;background:none;color:var(--muted);width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none}
+.slist .rm:active{background:var(--red-l);color:var(--red)}
+.empty{text-align:center;color:var(--muted);padding:26px 12px;font-size:.92rem}
+.empty svg{color:var(--green);opacity:.6;margin-bottom:6px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.hint{font-size:.82rem;color:var(--muted);margin:6px 0 0}
+
+/* list page */
+.toolbar{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.toolbar::-webkit-scrollbar{display:none}
+.fchip{flex:none;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-weight:700;font-size:.86rem;min-height:40px}
+.fchip.on{background:var(--green);border-color:var(--green);color:#fff}
+.gblock{margin-bottom:16px}
+.ghead{display:flex;align-items:center;justify-content:space-between;margin:0 4px 8px}
+.ghead h3{margin:0;font-size:.95rem;font-weight:800;letter-spacing:1.5px;color:var(--green-d)}
+:root[data-theme="dark"] .ghead h3{color:#86e0a8}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .ghead h3{color:#86e0a8}}
+.ghead span{font-size:.8rem;color:var(--muted);font-weight:600}
+.srows{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+.srow{display:flex;align-items:center;gap:12px;padding:13px 14px;border-top:1px solid var(--line)}
+.srow:first-child{border-top:0}
+.srow .dot{width:12px;height:12px;border-radius:50%;flex:none}
+.dot.red{background:var(--red)} .dot.yellow{background:var(--yellow)} .dot.green{background:var(--green)}
+.srow .nm{flex:1;font-weight:600}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--muted);margin:0 0 12px}
+.legend span{display:flex;align-items:center;gap:6px}
+.search{position:relative;margin-bottom:10px}
+.search input{padding-left:42px}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted)}
+
+/* summary */
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:var(--shadow)}
+.kpi small{display:block;font-size:.74rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.kpi b{display:block;font-size:1.75rem;font-weight:800;line-height:1.15;margin-top:4px;font-variant-numeric:tabular-nums}
+.kpi b em{font-style:normal;font-size:1rem;color:var(--muted);font-weight:700}
+.kpi .sub{font-size:.78rem;color:var(--muted)}
+.hero{background:var(--grad);color:#fff;border-radius:20px;padding:18px;display:flex;align-items:center;gap:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.ring{width:108px;height:108px;flex:none;position:relative}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .val{position:absolute;inset:0;display:grid;place-items:center;font-size:1.6rem;font-weight:800}
+.hero h3{margin:0 0 4px;font-size:1.05rem}
+.hero p{margin:0;font-size:.88rem;opacity:.92}
+.bar{height:10px;border-radius:10px;background:var(--bg);overflow:hidden;border:1px solid var(--line)}
+.bar i{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .6s ease}
+.gsum{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden}
+.gsum summary{list-style:none;padding:14px;cursor:pointer}
+.gsum summary::-webkit-details-marker{display:none}
+.gsum .gtop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:8px}
+.gsum .gtop b{font-size:1.05rem;font-weight:800}
+.gsum .gtop span{font-size:.85rem;color:var(--muted);font-weight:600}
+.gsum .gmeta{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-top:6px}
+.gsum .gbody{padding:0 14px 14px}
+.gsum h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:10px 0 6px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:.82rem;font-weight:600;padding:5px 10px;border-radius:999px}
+.tag.ok{background:var(--green-l);color:var(--green)} .tag.no{background:var(--red-l);color:var(--red)} .tag.pr{background:var(--yellow-l);color:var(--yellow)}
+.updated{font-size:.78rem;color:var(--muted);text-align:center;margin:6px 0 12px;display:flex;align-items:center;justify-content:center;gap:6px}
+.live{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+
+/* bottom nav */
+nav.bottom{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding:6px 8px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(0,0,0,.06)}
+nav.bottom .wrap{display:flex;width:100%;max-width:520px}
+nav.bottom button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;color:var(--muted);font-size:.74rem;font-weight:700;min-height:56px}
+nav.bottom button .ic{width:56px;height:32px;border-radius:16px;display:grid;place-items:center;transition:background .2s}
+nav.bottom button.on{color:var(--green)}
+nav.bottom button.on .ic{background:var(--green-l)}
+nav.bottom button.reveal{animation:revealNav .6s cubic-bezier(.2,1.4,.4,1)}
+@keyframes revealNav{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+
+/* modal / sheet */
+#modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;background:rgba(5,20,12,.5);animation:fadeIn .2s}
+#modal .sheet{background:var(--card);width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));animation:up .25s ease}
+@media (min-width:640px){#modal{align-items:center}#modal .sheet{border-radius:22px}}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.sheet .grip{width:42px;height:5px;border-radius:5px;background:var(--line);margin:-6px auto 12px}
+.sheet h3{margin:0 0 6px;font-size:1.2rem;font-weight:800}
+.sheet p{margin:0 0 12px;color:var(--muted);font-size:.92rem}
+.sheet .acts{display:flex;gap:10px;margin-top:16px}
+.sheet .acts .btn{flex:1}
+
+/* admin full-screen */
+#admin{position:fixed;inset:0;z-index:50;background:var(--bg);overflow:auto;animation:fadeIn .2s}
+#admin header{position:sticky;top:0;z-index:2;background:var(--blue-d);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 12px 0}
+#admin .ahead{display:flex;align-items:center;gap:10px;padding:0 4px 10px}
+#admin .ahead b{flex:1;font-size:1.15rem}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs button{flex:1;min-width:max-content;border:0;background:none;color:rgba(255,255,255,.75);font-weight:700;padding:12px 10px;border-bottom:3px solid transparent;font-size:.9rem}
+.tabs button.on{color:#fff;border-bottom-color:#7ee2a2}
+.tabs .cnt{display:inline-block;min-width:20px;padding:0 6px;border-radius:999px;background:#ffcd3c;color:#3a2a00;font-size:.72rem;margin-left:4px}
+.req{display:flex;flex-direction:column;gap:6px}
+.req .who{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.req .who b{font-size:1.02rem}
+.req .meta{font-size:.84rem;color:var(--muted)}
+.req .reason{font-size:.9rem;background:var(--bg);padding:10px 12px;border-radius:12px}
+.req .acts{display:flex;gap:8px;margin-top:6px}
+.req .acts .btn{flex:1}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);z-index:90;background:#10261a;color:#fff;padding:12px 18px;border-radius:14px;font-size:.9rem;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:all .25s;max-width:calc(100% - 32px);text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#toast.err{background:var(--red)}
+#toast.ok{background:var(--green-d)}
+.spin{width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.offline{background:var(--yellow-l);color:var(--yellow);font-size:.82rem;font-weight:700;text-align:center;padding:6px}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--line);font-size:.92rem}
+.kv:first-of-type{border-top:0}
+.kv span{color:var(--muted)}
+.kv code{font-size:.78rem;word-break:break-all;text-align:right}
+.optrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0}
+.optrow .seg{width:auto}
+.optrow .seg button{padding:8px 12px}
+</style>
+</head>
+<body>
+
+<!-- Splash -->
+<div id="splash" aria-hidden="true">
+  <div class="splash-logo"><img src="data:image/webp;base64,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" alt=""></div>
+  <div class="splash-title">YESphere</div>
+  <div class="splash-sub">Youth for Environment in Schools Organization<br>S.Y. 2026–2027</div>
+  <div class="splash-bar"><i></i></div>
+</div>
+
+<header class="top">
+  <img src="data:image/webp;base64,UklGRmYhAABXRUJQVlA4WAoAAAAQAAAAfwAAfwAAQUxQSLADAAABoLVt2/G4er5MOeambc/8gWrZrG3btm3bNpZR23aHGdRtkmcj+r7vfe79iJgAUjM4pUGbkQt2nDh54cqVCyd/27FwVNuGKSGE0Tez6dRDNyvs7LXDevPw9GZZvsLFNF128TUb+vryimaxYsV3OVDGpqw41D1RoMBvt1ewia07fwiSJXrwdTb9jWFxciROe85KFs9MliFmegUra50Vr17QoKes9PNhwYp9fZGVv/y9SlGr7SygY12MMr/cZyEfNVMjaIGdxXQsCVYg+38W9XSe6b59wcIW/2Sy/u9Z3A+DzVRrKos8q7ZpfFew0Gv8TVJ/A4u9zd8UvhtY8K1+Jqi1gkVfW9swbSoLP9tiVD+HdDzYoG/es/gffzIk6zkDLMkzIOgkQzwXot8CBrlMt59sKBzNdIp8yDCfxOhiWctAN/no8dVHJLbvdQi6zFCvh3o3iMGO8Cr6OZrSeG+mM9x5XiRY8VSlejadAc/1KLIYUVmcJ4MZ8kgPAq5juh3s7hsG/aMbbTuqvRZXcRWoqpJcdWHYvV1oh3AdtzjFVOCqinf6lYG3clqObC0R+V5GdsOfKOM1sre5RL8y9NZE07DNITqE7YQWfBPb3fCUCmxVGQ1s2ByftmXwnUeiG78A3Yod6Pb/hu7vk+jOX0B37Qq6W/guoLt2Et3539D9vQPdgYXoVoxEN6Edui4N7dgcn6VYsVVnhNzCdjdCO4LtN42mY5tL1AxbG6Ks18je5hH5XkF2M4CIViJbT0TUDFkbp1grrupEJ+0wrt8sTtQdV19yGW9FVZ3sStuJar/FFX2H6hdyG3gT090QdzQU0xjyMLoEUXmCJzQL0QLyOKkST026ZzQbz0LyMrYYTXmiNzQUzWjyOvgqlpth3tG3NiT2n0lHywYk23z0oOjHOJ7Hk75N7SgcrUjvJShWarqFnMVwKYz0zytGUFZERv74UT5bUzJ2kHzDyWDLLOkW+BhFtdfKtqkuGe+3VbLdAWRG/21y7Q4ic/qvkWpjAJm19iyZ5tcl82pDPshjG6GRqX8qkaasOZk9/4wsF4rI/CFLHYKsDCclWzyW4llrUjV2gwxbEkjhH6+qd+MXUjtkRLFapaPDSPnEeVXqVC9KJhHT5pSqUbYgg8RMGHXbfHfHJJGoIb/srTJT9f6moSRvcu9jVnNUnuibSlIntFp7/Y0xb2+sa5NIsvvntp5z4k6VHtV3f5vbJt+fMEZkfNp5/Ir9f5+/duvWtfN/H1g5octnGRGkJlZQOCCQHQAAMFUAnQEqgACAAD5ZIIxFo6IhHX+OZDgFhLYAYkm5An/gPyQ/G75J6l/c/w5/a/bx0Hdc+Sp0D/zfvG+bP+P9Qn6K9gT9U/+J+tPYS/dL1C/0P/Dftf7x3+z/ZL3L/2v/a+wH/Sv8l/7+wg9Af9pvTY/dv4N/7J/xP3O+BH9r//l7AH//9QD/78Qt/GOz7+seBfiH9Te23q7YP+ij/V9Cf5H94P0v+F/dP+3e1XeT8NP8f1Avyb+i/5/8xfdS+Y7IPYv8p6AXtD9Y/2/94/JL0r/9P0F+vf/G9wH+Z/0r/c+s3/B8D771/sf+d/jfgC/nv93/6P98/Lj6Zf7H/yf678wfaV+jf5X/xf6H4B/5l/Xf+N/hPyq+bH/8e5n9uv//7r/7Qf/F5KNfOq78WbN6X9G4P8twhuKu714Ml5c8AMEq7JFdO9WLr2TbsaUV+ruzfLDmsJ/O/B3LuU1rSA3aVrMo+Uk/sW1/+fAvdlFRvk0dLaHpW+u03BK94RJ7gAOA42kH4+oSPXTEY7WnruJyD1GF0HvdwBxrhso1d+jE/H7KF9yu2MqhV3uFMomvazqiDU70WGP7Uk7mpoG9Cic16mFOhwp2ibR8T96z1HPlMG7PGR4B9PlRVSnNX5lYHAYP7PSuDApK8S76e/v45HTpa36hvy+k92VICyKZnr1Tn2A6X0cjA6++Cd5RTV1u/5J07UhghpxhW76d/s/dGjtRHpdouQQmfBlBfGKFQa7YMU4KKYkqcY0N19KznBnbBFcxnfxAM13FA6fdhnSj+Zi/5aTQAJlRc+KoWzb7J7h4laPGkf4+pzj0p5yLVxeZjdeGNF9Mipx8I4ehTZ6ul9WKUOMP2Dsb8aYpAGtdAobo2Z4q9F1MvVS/688TIaIJyCQOaxKymFEQ5zZr6Vn69EH+VHQAAP7+pTZNwfT/5+1KIm+tCln8W5H7OnkxsDRvg1fQ+sp1nHzIn77dbS1OR0ZA8u/LISXZOAXZf9//+F6EV4kGsJDikiXlw+lc895IZ25BDYNo3NQY2VWwKscp9heWMqTT6A8ohX3rrUBXarHrUtDD70/gTjm8jQxbUYHE9ApkTCWp7p3/jdB6T5oDoA3H1I8VZDH2QfjlhiqFn4gxjIFdqIaowl/t8taPg8VN/Oa83DO8stHcPqF4hf6QiSQvvB04UtZop3kwvYZQWd8MLqXyKl4HqYJOPufckcmgeqRxUmvc8bBy57AZJqRFqib83CURqeFgRPczEQVcF9WMqh+RXA92bV9mqnzK6oej3cNzIL0uK5ZJ2/I+kpINwRM9mb3pox6WG69G7t5/c6gzDIw5DWWwpqfdMNIkwXYrfNgyP/Q4Wr4Lt3z/hgijHbarcMYaEBfNWDMLkqMl/Ka4XeKUE3xNj+Xe95cFFcRIkR+Id+lcnJOOfXk+SG/599IL3x1df8dmIKGdC6YN+AsIvOWZKjtL1V/ME4LolqMHBL+Dn8SEro63QCP0lD1GVelE72dxEtOrrMdfiJMfSl93EF7AD7rJgSo4rQ3P9boi17EQ6kStDds5219Qb5ZQNDGfs9fb0zUBP5eMtfhMtRTUybrmN6a1EYQ3myWWdUCH4Z50s7SWIFXy2amKiDuLwB2AwA+1vo8f1NQmvgBCcgGockVvzgQiz3Ayf32icn+um/dexgrvwJ+Bq1JBjGJNe37zZFndkdiTOM7dfghZYuNq0yzoSLgHuzvyySKtur424DdLMSSQCSV1dwD1LmSJxXhLDAil+b3/g3itauJisbrrhNOiotQK2ItrBdmP9ILO3w08P5clYkjNiCLTOMiPJ/yR/2QB4ARNf+lVoJlzM7qPvkSnn2drIHx8L3LZ1uOfhxyyTGs4ekFDjpf8okVTtlgKEIVFb93ng6xyy05GpTyvyUFBXZneli2m+VtRLPLPVUCHy19GQh+oiF+O1VPoriHBKdi2YF/7CdhvOR3/BIhV/XjqStnPaFmLF5dorVa6eDWkugH+VdnPLip0RBfWf1bUHV3ArgqgCWlVCuSsvFKnxMcgSw8lzbgTof7EIUL4zMAi1jI3WcSJBg7Dsr9CrucluSCZ1JjIFxVSuKX33AFUaUtfzYCgKop5ehHS03hBkZqmzxDD7Rum6M/bMrJ2JbJv9dvtgKeg6vCWeoTV6xG7U1I/kZpvrmOcrtT7/8SYOh52oi/lFD5OwyjVuKiKkyYHGdwZkOjB0dcEiIsG4I444qKSBinlig9+9cbwb7ffk26elp3AH+8+7KcjB6Cq4+I2Pmw1WBSnqG0ldLq4Jqy/GlNz6FQ384OIbodt8AaoThNaVgk4STUVTFsUNhEZ1UOC7b/CuIx2CcUSUAtxevUvyf0H2u4t2QzTscEBdJfV9H1orHNbLgsHC4ITk4IzhHdkKGLWnFNZ99fpukmrgkk6KqleuTPPVNt95ZxvNWKNPTUDsoIZTi4zsJQ1eUPvmAc63ghGpug4fdoAtppO6Mw5jy1hsgEgpADlLa7HVKGHf3vISTyUva85vCRxdfwvPAPJIy2a+vKGJXf4o5343nA3WcKsbWw8DVFGWh1kqDYc6Hc6rjvfzaIx8GzOpDaPiZbxWaKeQ3WpNLyIWYi2d4Tv+AYZicd7ZLLDU1Wl1oNAdnnqLefH7L0mZn77GgdtiPR7V8iU7NhWGdOuzuG0E9q4bz395VQ4THoo0yeX0ST/YEFfWJIkqogcJfEXouM5jO/Hyfdsb9rMMclZG31/3hjg4Q2pxJrUZE1/AaqUN0wiPbQFHdVnfWhIeWq4M8kQhZaIJtHrhd8zbk/dzII0UTfAM2zu1stUtkEnl8N0Yh2P33UC8SZbST836SOswHAHjeiC8WHPcZiyGJeBu49wvsToJwIgfLld6bF7wXZTB+d4u1kImhsUutKLlSpsItf7WlrMyd+C62K5BB4cJKwW04XQCcNMylxoeG6Qo66u4fWKbp67WMyvd9+sdpH+efNxc/xgb0VBkd6tT/wlZEuzgWJzEqX8Ko2sTGmo081WaW9MtfTwoFNSEJYdsElnI9FTOOs5/C0YBAhwlAzMXMVKFrhTA/nUM9lgsgg6jIDqDFaX7xxayLi9ro9Paa37Fr1t1abtKGWbJQY+3pNlmgeP4clrIQBUcDrDb89zINjEDdGhfQ0v9bsHNnGJ4yZniSJMFZ8BcLGk6Lad75Gsba8qrwfpI9wDq9iOp3CeASGFtwbLAmZkvzz8e8NUj0uLaILXEOysh7boOi3w537jQLFH10mZ2cCmf8qPiTZRFxv9+OoxlKG1tTG2hLNBmmRtMq+X2zuplPzmngZxfjkiWx9qIRIHkMihzvQKE9BRayd0y45o0cz2j7qKyVaIqkPKJ55zj8mqHCT/v99GR1J4Sm8O9GMmXtlNf/G872URPBVTGtAfGJMAWqK74GrZSv3XvfxOL4QOJRxPOHCjkxzoyFYuBzkDTX1ypX3KbMrMbqA7t1PfJuIgnRFTr6BngStPQ1i1EJD0MzyNO2up49Yh9PmPWZc9TvqNeidagIl5mO9gkNdj2S8yGyl2G/veJW32pYePxzEMqh07EbRyQhExUs6haCo/aa+s8SaZJuNyjSgbVxpkFfrIiayZ3loH6Y9At5i5e5CvkUbnnxNnoqOHHrHtsI6oEAEwFJ+f7t8y76E11391pWp7iWGHnTcRr/1DUwb6452wkRv9TTYBFJJZz11IAeOOA294+Al3OzMLewN5N5WTbCoH//chVd98b1ftefexbejRGBaja/qEq8DzyZ8CXKMSJ8hraJOSJj2sEtw35xb1NoNu5kamWsGc6XwbaJW7wqWjrjcqWE/ibT0Xf7fgmzZGLrOkAufICkvrAmvaCigwzWw0gJQhjAO3/Hgi2Rxwif8TMs7MVvmgJG2uIyVgdEX/hwtIdW4qPRnG+3Rk/JPqzl24eUqzKbjRGtKeJQcHLkb5Vi2DcrWpVSrT5bd/TOEEFAO+O/bz4HbU9b/V7Ux89lKbNo8quNrv8buG/sOYOsusGYgS1+0E/gWbDJS2BkE1OPOQahUeSC3uHwpI/VMSCBHN6k7UsWxABeO+KH5FBH1o4zW6O05Y5DnyDtL147EQmtIfE17kblZOHbbLeV2c1VTlmBmH6IHKoi10NeI6/qnvioSe9nOjnOxC1oyO1sXtvU3higUanGJRqfzf9uRTz47NTQR0QDCAAOeKqZboAa3t4Qa2wjImpWjqAzruMYwzCWQkR4J4WEshS0YWAvOB8D7q3A2kN/74lrMqC6znlwNZlt2d9akB3RLNs5LCnDEfBJkwOnLR77ZmGRAXutJu5iJFEDQldwLnJwi5F64J9nzI5b1KFJnNUyUfNnj2QtJnucmynACu6JXeWV6MZeKDmM5P1dwmNl5Jcctaw6QbvGYIK/iD0XZVkuG7yYyt/2xsXMf2dfEdFhzci2byOGRECB3JfyAKV24lgk3fpQTsef84ZpncP0Uhpmh5ERqFGtvOJhi1RTLP3UuTKp4z4SLwj+IrHPUEuevmiw1jtzAEg7Vth3BIHTMfxSqw2sEbwiqLEa8eJCDWqliss8Pm8GiEua2RJnxJmcMpP6yqHmDdENj5zMaTR3sxFT0Yr6aO8AJjXf73LjTavOSpRKNS0CA3sOYfhjJT0azzH8VH+py/eSS11PtMfnuT9znr0XuRMYGKYu7c/Lu+tM7gPibVbPnfS0KPkxWdEppzsOxo4yNgcF0iwfKqRDgXUTaABzfy0Y9+GB5GUgdcB2yzDE5AgElEEQJ0B3x+npQrnnLRxBCuuSm1UkykpMUtphGILfZldG/HsWLjq3XUKJmTmGmaVi8mG7h18FpoJUJYK97hCNNzud8mbkR/pigmHm08M0WS/VQB+eZ6sZXup6uUTV7RaNtbAoMrbSG1enLGcnfG0bX2Ft3N+c8AjRpnr8vVI2NIlaH+H8RAoVf0oYHu18raVPRscx3qU9SDkESqh+181Cb8OJHrWLW9YFa7+esN4rTo0/gluOeLneCcqNuhadtl9dHgSrEDgGKzzIE7fNiFlJdkmOOIfErCYUtD+ZvzFU8VvLCsZ1em8E7XW1pDtHl69IyHomwvekQ2GqBaFXRLBGWLExQIS8/TDyH3Ncp5wlZhbNPL+je/hPbTLgEeDYPFVUDP8oAkP9F9oG3MN6xI8jJyK86CwgK1bZZDDLEb+RNlzYyoUlJ9QisVcpKjbzu1mxjdXp0/ARhNyT4cPoGPMA/NEDPXZx1jGsyX7j6PnrEc/09b9AbCVQtYIgSqgNDPympM6baPvhy66kNaCEXQWjIJh+/q/Vdrz84wXQPqHQdXgxpCkYAVDwEgURmSNMgC0MtM6QJdtWkoI4EhVPUF2MuI0E5ea4UDu0SYedts9t1MhpI+V7HHXOBfGgWPwXuVFcgszdr1ILl27+nwZ0F+qrSx0uwsnvHWzOVpgfut772Lo3p+0atLlyX9wj4dworrbF3m2fBouYa2qKSLnLPjUGJNzn+3OWA4VkCN8Oj7mleFTFYhETWgpr9lo8oZihK685okeyJabPUJFYW35DQACwFZLPLz1fd8quOM9Hx2876aZ9svszfHBgYo0/5AJ0mnnxDegNfEgLt5TE7m1D+8PbRE+hE+vvdNkN62+GsLkzT0u9+L/caqueSzizavOCMiSe81L+2HTnbYlrrUD76eZLHRXhlo8J7zlZ4qj2BgxkXS3mPsp7iUm/NA678fVbKVFHH0vH+//1Ji7vMDd4Bg8EcRAecCwjdj6ccMJEg9E00U0CuctU7YcSX8FN3KiZ+XEvVei/8NE+VgIqYndwwd/XuIPWX8X4z1dvwCDO2LvPxNq1GHYnwHNcc/rU1oPqompYaKzSCPGVgHg1CIwc47yaZyOqwnLKGW87CZYgMKbtBuja5zKAuN6BBZFKtSJ8KyJFBUS6sDvPeZL1kPbRZUJPtgm8btgMJY1O4MzYcUxzxpIVAMAnvPXY3jKt/6SlaJvHuRd/BRTKBFyO1M2c7SYoMPgVOzhrbk5OIra6Cil0GAvcaxXHX0KfLW2oN0uUCJqLQw7lcK2dN5NZU8gXQoOYfhn1jsyzH1QwOpZWMLPaLyb5vINKJcjowXPH7htyLO1sMhTY5phFQkphL1SsZleZzd4SAQMsTU6p265R5ultNSANN3jnAR/XQ6/2mP1heoMshZyutKRQanD9dtnGK0dHTaeNs9VvJNU0FxmjLT7vB1t90zakYk/74PDjaU5PPFdGvcfmPaJMHv/rUM61f3YDsHWFLpiOBA6B5j7Lb21mmYsEqJM0GRKUG5CqQ2ZFZKbOpFEjSW10aMZ8WBhJks+l7ziMU3mZq7CHakv0/LJFGzRvsvzUOBNnRNMkIrx2sT/VAA/Qvan4juWt+eVMHrw+c92AfjIFZ9B5s9tFiPw7MW3MaPrjL0kBUiDT44DcfvHoiOnlfM2I6TPEEeQjPPmxQY31vK1ppyGPPUp69NgfFAT82rzdy5+cu9/eXMqOSmqCabmjv7xRg4mGSWovLxv2nVySUgL8oBD8oRlja/bZLka6bcpwTwIkNbWYxhiFEi2PVYPyQQmtby2ng62yq4bBNvGNFvdykdxcRUWDMG9tYaa27J1EckDtupgNnxC5boenN7TTSFkAHdiZV+sSNcp2rswiQk8ua75f/t+vnNOITkpTQqSA0v9ZpVsNXMFntEb7F3U89tnom5pzfxWLbKKThCwqgg71E1nqBrXMaAwrgzRyrYoP6q8V9P5R+UA093he8UtOTwSkNzzQTRAtFP+7DLklP1BGp2Coi9DvY4r8qw5ju7XEfR4mt3VTGcXhX01WZVTjZvI+w34sKOVgJJqU2VsxFT8cbg0b2vLOLzulIElrK/RrjVssl6z3TntawD92oyz/ILEmPM4yugiqU7W1gQ58qKgOSq2VMdfKYhCsx3/tLZIl2j/puaLTgJ7+0nn4/4OPGtc6r/BiI6T99DXXmfbYykIFsqtyjZxk8K9RZyMCTOVSx30KD+VYpkzpYQba5umLEMTDmZzyVJF5lXflmEdPFqMrMioT6/MQdPEzEWeerETZzJaycMn6WOyiU4Y9cjlzGMgKAjNLiPinhp88RUCmg7eOaJL13tsPKLJxogJv9NA54xcabiswBj/117XIYLK70byFthtjUWX2AYbYalUdUav0ZPV78oXT7pN6ypLuVR/gr+40e/iISUyncqqu91+dfHAKva3NE/e6VkM3pXe8T59Hr3LNYnC3c9+ZAkU74U2k8YftUJ4xr9UECr6ehq9ghyIHdsRaJLbUbUJmINa1EaytzujjQuMgnYVMa99RJtBj1MF2zyU71w/Uk1RMQgUY5EDbtHG6IVaV+Q+fc0pednJTsqJ8D6PlBQ2zcTYqpG1BOepVGFj2NBRFXtJGuos2czqQ3GRy8Z/l9UwXM/K9ZA9Jzj9PQb7F52xTGbPykqBXLqcn4Qx+1i3Hz7GkAj225YiaWleianJwkq1MW1UB9V/zsq3l3vitWrZG375+AsePw4DGemwsMUCN3/aR8uuF8VsSXFF4wBvJY5HQ11aLAZFpk2pnfjqa8s9OwDQkELSF4K6mHDwSoximFDkks3jR4wkdEYCEkRSR1uFjLQKAp1RfvKkPAyQ00AG5MnGUMoCsbcp5OlryggnhtMKRylzaQetpW8cbaX1Snjh8LMdhOq7e5f4an2VyRYj2JIc9IiJbJwgyC7Q2f4GA9bqHTw1/oyzCWVjzdXSt4fXfJqr5f/5QFPoQ0DglHY91GJI0SXEAPjIaZrDz/o6KX5nlupmvA7scSchZzF0zXw4LfY/pC+Co68ZBoup/wa2v6uEPvlONdPvgCkDKlGHnIpMBjt4tmK2URnE/PMyhHjZ1fpXSuZUvYe5mWSTpkkTsKQpsF1hJC5aOKitfGn/FlbXNhB9oqvkjBBb5UXW8hoKSZyqaH/Re3x3OEi0e/ETrY8nr1mwUQhD16S5bg+eWLPntzSKlzXtwrx/ZEkTtD2DR+b+MNgQe3c/GCt/TsBxjz/yGk+UIr7mwCR+tW5rhay48yRuSTSDSQLijwTcVEy8WHWyy3ZZKq2czyhQdvI9Bihp92z3s1e6LccB5kXVlWQvfuJOhjTV712gCrlF+3G61p4k7kH727MkvbIux8fcfCPvbDeaHsWG2WQ+x8SIlqzCXOGZG4D+va3btuCBBL4rJDnz5VKEpiEcRMHH7HAYwM/rABHB8eupi+eu9FdjQKPOyUxV2ywggA9OQQ3wqdlftJgfYzGbu3tz8IwHpzqgmLtP4xXuvpcAVACpNF2/NAGIzAVrmZ/FrGfiSNk03GhXR0YjIBZEgNdYxN+PFOAYpupK4fYYbaAeAH0ETW95k8dHi+tFbWn6wjQ03rg9pv/4bduf+bQnPjipofOT4a0SJeVoCHoiv2/hm69CdHeSjSPAvH9YdLp4RlUGDvjRqjokJNSlr/+g7lZM8RHoIraZPbAzylW6sO7jLPNQKTVnyKLGOUZh5BFa2GcG2ZzZjHgOao6HzloU3uOsr1QubElpHDB4oMzDkf9vPyu/EdBVTxP47upJnHfnONvokBIKUjuZy5eCUzmIMjmcRCDZH7zPJWwKWlaGc8JnCC+UFqBm1KFGLpKugix2v67+NZwcqoMcFriOXFo01XD4eJ2ljgbX+2fnasoI4wqRhtSxIQuyLmGmUdlHVIT2wIf3qvXg2WnisQfI3x3meJuLwrFpZtMud1Gxx9dvKyJge7nY7X/vNE0zuwU8bSDO0h0zHf8F+ODzTt7Xx678vLCScG79S5q0my0R+DiyqIRPUUljIgaARVuyJknfRLPZ8sv4XMu5veB3npffOCNxOmSchk/k0W2vNso+pRdI6l4jmTDHLrj6DNlEOVVr3RO8t5a7Wdu3SLt8vSe5TRIHiUv6i8glaPWmmbr9/UYpwZhkpXW8Ff/lBXNHfnrfnCPx1wu2NuQm3So8xHV/u6M/k6XkWhrJd+RP2w2oXnz9WXUzVwBF/4T1X5Rqmeob896N4KzhQQRF00wxCVgrQhZhbkM/tWz+8+3Bgy66Gh1voljqqLz1c18olc9n6Ch+XhH0x+DMx1sFuhkiJIxcAlpfAAAbv0n9RSX3tmiLeMCBrDc/KK1avWnfEUPZlXEUyUlYDSCWZyiL6EkFce2asZ0nQMBIHfRUPiH5Lyc20KfV0dwHbKUg0fVqiDbESmm9w0yy42xMCIOtOfPEAnktECW6msFKkdXqSMGzv242zbqIPMEnSo1+ss79I2WqpgIqCveSrK1qpIgGT6nMfupt6DYS2gzs7HSf/mFM/0MZMzpJvtWAvwFEV34P6yKHJrG78qZL5mVaOI9C7ESCmmJaaJWHExFeiudbCkyw8DuJNimktnWCxE/vsFYIxFjG95UU4U3WaEfSIgSrxhIxXYG1i2gXb4q5rO1wpp1bQuntmqbVD9hvdVAcp0sP3CXIS/Ca/1v2gALXRK1INOzLjQ0sGkGMvP1JqbPIMvrZJrGXXO+KEeqlbbozI8jGypz86xdoqcVP7+HkMUkSYHFefG195QYIa3xi9mSzfgSHhlHmTsZDS+MNilMc39Wae4+J6chsrh2F6OmbF8anGIZuv2LajMzzMIMo/a5Vz9VL0zU81hptyk+5aKsifKfjo0jnz/ENngalY9GTh2LQbNLqxIMoUeZ6ucZfFcEbnBeEY1d8OVNhFYi/pzMcmMR5NdvxHQqboI4xCj7oi1VB0Deai3wFh8PXs9Ta0f1KbERKA06dBctT2wDxIlqdZLirYj8oG2vXxXbH4edxsEV8yb8Ojye2iGcnQSSvYKjeAboE7BmB7fykh0WdvbbbAfA7Au29GTFrot8UGfUTjwrTqUSX5s6pPP3PnEm3qehdzuW56o0JKgwVdn+gb2MvTTZWlm4zVqHjTdv8bVqCVVXXesDNZkkVQ2js5f59y6OcfRz0OCD/BYFm3Lb+kd8CQxpKiXDF2kXbkpz8hVUyD9e445MEp9ZO+S1dsQrDwDiaiWAt1a/NugjOpYAkkc5whoBO6Q/cRDAj6iaqn7a3cAYhtZ2SFoHODfXTn99WqDXiK9tqpqyv4f3NeZSf9IqHdjISEx2gAkujAX/CxPG0p2X0zqr/QF8JBseWWXn9T++fYu/+QyAAAAAAAA=" alt="YES-O logo">
+  <div class="brand">
+    <b>YESphere<span id="modePill" class="pill-mode hidden"></span></b>
+    <span>YES-O · Bataraza NHS · S.Y. 2026–2027</span>
+  </div>
+  <button class="icon-btn" id="menuBtn" aria-label="Higit pang opsyon" aria-haspopup="true">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="12" cy="19" r="2.2"/></svg>
+  </button>
+</header>
+<div id="offlineBar" class="offline hidden">Offline ka — makikita mo ang huling na-load na datos.</div>
+
+<main>
+  <!-- WORKPLACE -->
+  <section id="view-workplace" class="view">
+    <h2 class="page">Workplace</h2>
+    <p class="lead">Para sa President ng bawat section/strand: piliin ang inyong section, ilagay ang student list, at isumite.</p>
+
+    <div class="card">
+      <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>Piliin ang Section/Strand</h3>
+      <div class="row2">
+        <div class="field">
+          <label class="fl" for="gradeSel">Grade Level</label>
+          <select id="gradeSel"><option value="">Pumili…</option></select>
+        </div>
+        <div class="field">
+          <label class="fl" for="sectionSel">Section / Strand</label>
+          <select id="sectionSel" disabled><option value="">Pumili muna ng grade</option></select>
+        </div>
+      </div>
+      <div id="secHead"></div>
+    </div>
+
+    <div id="workForm"></div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section id="view-summary" class="view hidden">
+    <h2 class="page">Summary</h2>
+    <p class="lead">Overall monitoring ng pagsusumite ng student list.</p>
+    <div id="summaryBody"></div>
+  </section>
+
+  <!-- LIST -->
+  <section id="view-list" class="view hidden">
+    <h2 class="page">List</h2>
+    <p class="lead">Lahat ng section/strand ayon sa grade level at ang kanilang status.</p>
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="text" id="listSearch" placeholder="Hanapin ang section…" aria-label="Hanapin ang section">
+    </div>
+    <div class="toolbar" id="listFilters"></div>
+    <div class="legend">
+      <span><i class="dot green" style="width:10px;height:10px;display:inline-block;border-radius:50%"></i>Submitted</span>
+      <span><i class="dot yellow" style="width:10px;height:10px;display:inline-block;border-radius:50%"></i>Pending</span>
+      <span><i class="dot red" style="width:10px;height:10px;display:inline-block;border-radius:50%"></i>Not Submitted</span>
+    </div>
+    <div id="listBody"></div>
+  </section>
+</main>
+
+<nav class="bottom" aria-label="Pangunahing navigation">
+  <div class="wrap">
+    <button data-view="workplace" class="on">
+      <span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>Workplace
+    </button>
+    <button data-view="summary" id="navSummary" class="hidden">
+      <span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6" rx="1"/><rect x="12" y="8" width="3" height="10" rx="1"/><rect x="17" y="5" width="3" height="13" rx="1"/></svg></span>Summary
+    </button>
+    <button data-view="list">
+      <span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4" cy="6" r="1.3"/><circle cx="4" cy="12" r="1.3"/><circle cx="4" cy="18" r="1.3"/></svg></span>List
+    </button>
+  </div>
+</nav>
+
+<div id="scrim" class="hidden"></div>
+<div id="menu" class="hidden" role="menu"></div>
+<div id="modal" class="hidden"><div class="sheet" role="dialog" aria-modal="true"></div></div>
+<div id="admin" class="hidden"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   CONFIG — ilagay dito ang Web App URL ng Apps Script (Code.gs)
+   Kapag blangko, tatakbo ang app sa DEMO MODE (sa device lang
+   naka-save ang datos; Admin PIN sa demo: 1234).
+   ========================================================= */
+const CONFIG = {
+  API_URL: 'https://script.google.com/macros/s/AKfycbzW24Qfr-E6LPh6eODmH_hmfjUQYBlJT0AI9RvaHFf6eRHJP6tYrGesOS1OgqjsyNNLDA/exec',
+  APP_URL: '' // opsyonal: link ng app para sa Share (default: kasalukuyang URL)
+};
+
+const GRADES = ['7','8','9','10','11','12'];
+const SECTIONS = {
+  '7': ['Artemis','Apollo','Hermes','Poseidon','Hera','Zeus','Aphrodite','Hercules','Achilles','Athena','Demeter','SSC'],
+  '8': ['Galaxy','Planet','Antares','Lunaris','Steroids','Comets','Arcturus','Nebulae','SSC','Meteors','Solaris'],
+  '9': ['Aristotle','Descartes','Confucius','Democritus','Leucippus','Pythagorean','Socrates','Galileo','Einstein'],
+  '10': ['Patience','Humility','Compassion','Faith','Charity','Courage','Kindness','Hope'],
+  '11': ['STEM – COE A','STEM – COE B','ABM','HUMSS – Del Pilar','HUMSS – Bonifacio','Food Processing','Beauty Care','Cookery','HUMSS – Rizal','Agriculture'],
+  '12': ['STEM','ABM','HUMSS – Mabini','HUMSS – Luna','HUMSS – Santos','HUMSS – Aguinaldo','Carpentry','Agriculture','Hairdressing & Tailoring','Bread & Pastry']
+};
+const ALL_KEYS = GRADES.flatMap(g => SECTIONS[g].map(s => g + '|' + s));
+const STATUS = { NS:'Hindi Pa Naisusumite', SUB:'Naisumite', PR:'Pending Review', AP:'Naaprubahan' };
+const STATUS_UI = {
+  [STATUS.NS]: { color:'red',    badge:'b-red',    en:'Not Submitted' },
+  [STATUS.SUB]:{ color:'green',  badge:'b-green',  en:'Submitted' },
+  [STATUS.PR]: { color:'yellow', badge:'b-yellow', en:'Pending' },
+  [STATUS.AP]: { color:'green',  badge:'b-blue',   en:'Approved' }
+};
+const DEMO = !CONFIG.API_URL;
+
+/* ---------- storage ---------- */
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('yes_' + k); return v == null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('yes_' + k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem('yes_' + k); }catch(e){} }
+};
+function uid(){ try{ return crypto.randomUUID(); }catch(e){ return 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,10); } }
+let DEVICE_ID = store.get('device');
+if (!DEVICE_ID){ DEVICE_ID = uid(); store.set('device', DEVICE_ID); }
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => Number(n || 0).toLocaleString('en-PH');
+const keyLabel = k => { const [g,s] = k.split('|'); return { g, s }; };
+function when(iso){
+  if (!iso) return '';
+  const d = new Date(iso); if (isNaN(d)) return '';
+  return d.toLocaleString('fil-PH', { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'2-digit' });
+}
+let toastT;
+function toast(msg, kind){
+  const t = $('#toast'); t.textContent = msg; t.className = 'show ' + (kind || '');
+  clearTimeout(toastT); toastT = setTimeout(() => t.className = '', 3200);
+}
+function cleanName(s){ return String(s || '').replace(/\s+/g, ' ').trim(); }
+
+/* =========================================================
+   API — remote (Apps Script) o demo (localStorage)
+   ========================================================= */
+async function api(action, data){
+  const body = Object.assign({ action, deviceId: DEVICE_ID }, data || {});
+  if (DEMO) return Demo.handle(body);
+  let res;
+  try{
+    res = await fetch(CONFIG.API_URL, { method:'POST', headers:{ 'Content-Type':'text/plain;charset=utf-8' }, body: JSON.stringify(body) });
+  }catch(e){
+    throw new Error('OFFLINE: Walang koneksyon sa internet. Subukan ulit mamaya.');
+  }
+  let j; try{ j = await res.json(); }catch(e){ throw new Error('May problema sa server. Subukan ulit.'); }
+  if (!j.ok) throw new Error(j.error || 'May error.');
+  return j;
+}
+
+/* Demo backend — kapareho ng lohika ng Code.gs pero naka-save sa device */
+const Demo = {
+  PIN: '1234',
+  db(){ return store.get('demo_db', { subs:{}, reqs:[] }); },
+  save(db){ store.set('demo_db', db); },
+  access(db, dev){ const r = db.reqs.filter(x => x.deviceId === dev); return r.length ? { status:r[r.length-1].status, name:r[r.length-1].name, id:r[r.length-1].id } : { status:'none' }; },
+  admin(b){ if (String(b.pin) !== this.PIN) throw new Error('Mali ang Admin PIN.'); },
+  async handle(b){
+    await new Promise(r => setTimeout(r, 250));
+    const db = this.db(), now = new Date().toISOString();
+    switch (b.action){
+      case 'state': {
+        const sections = {}; Object.values(db.subs).forEach(s => sections[s.key] = { status:s.status, submittedAt:s.submittedAt });
+        return { ok:true, sections, access:this.access(db, b.deviceId), serverTime:now };
+      }
+      case 'submit': {
+        if (!SECTIONS[b.grade] || !SECTIONS[b.grade].includes(b.section)) throw new Error('Hindi wastong Grade Level o Section/Strand.');
+        if (!cleanName(b.president)) throw new Error('Ilagay ang pangalan ng President.');
+        const st = (b.students || []).filter(s => cleanName(s.name));
+        if (!st.length) throw new Error('Walang laman ang student list.');
+        const key = b.grade + '|' + b.section, ex = db.subs[key];
+        if (ex && ex.status !== STATUS.NS) throw new Error('DUPLICATE: Naisumite na ang listahan ng ' + b.section + ' (Grade ' + b.grade + '). Hindi na puwedeng magsumite ulit.');
+        db.subs[key] = { key, grade:b.grade, section:b.section, status:STATUS.SUB, president:cleanName(b.president), adviser:cleanName(b.adviser), contact:cleanName(b.contact),
+          studentCount:st.length, male:st.filter(s => s.sex === 'M').length, female:st.filter(s => s.sex === 'F').length, students:st, submittedAt:now, updatedAt:now, deviceId:b.deviceId, note:'' };
+        this.save(db); return { ok:true, status:STATUS.SUB, submittedAt:now, studentCount:st.length };
+      }
+      case 'requestAccess': {
+        const cur = this.access(db, b.deviceId);
+        if (!cleanName(b.name)) throw new Error('Ilagay ang iyong pangalan.');
+        if (cur.status === 'Pending') throw new Error('May nakabinbin ka nang request. Hintayin ang desisyon ng admin.');
+        if (cur.status === 'Accepted') throw new Error('Approved na ang iyong access.');
+        const id = 'R' + Date.now().toString(36).toUpperCase();
+        db.reqs.push({ id, deviceId:b.deviceId, name:cleanName(b.name), role:b.role, grade:b.grade, section:b.section, reason:b.reason, status:'Pending', requestedAt:now, decidedAt:'' });
+        this.save(db); return { ok:true, access:{ status:'Pending', name:b.name, id } };
+      }
+      case 'summary': {
+        if (String(b.pin) !== this.PIN && this.access(db, b.deviceId).status !== 'Accepted') throw new Error('Wala kang access sa Summary.');
+        const sections = {}; Object.values(db.subs).forEach(s => sections[s.key] = { status:s.status, studentCount:s.studentCount, male:s.male, female:s.female, submittedAt:s.submittedAt });
+        return { ok:true, sections, serverTime:now };
+      }
+      case 'adminLogin': this.admin(b); return { ok:true, admin:true };
+      case 'adminData': this.admin(b); return { ok:true, requests:db.reqs, submissions:Object.values(db.subs), serverTime:now };
+      case 'adminDecide': {
+        this.admin(b); const r = db.reqs.find(x => x.id === b.id); if (!r) throw new Error('Hindi makita ang request.');
+        r.status = b.decision; r.decidedAt = now; this.save(db); return { ok:true };
+      }
+      case 'adminSetStatus': {
+        this.admin(b); const s = db.subs[b.key]; if (!s) throw new Error('Wala pang submission ang section na ito.');
+        s.status = b.status; s.updatedAt = now; this.save(db); return { ok:true };
+      }
+    }
+    throw new Error('Hindi kilalang action.');
+  }
+};
+
+/* =========================================================
+   APP STATE
+   ========================================================= */
+const app = {
+  view: 'workplace',
+  sections: store.get('cache_sections', {}),
+  access: store.get('cache_access', { status:'none' }),
+  adminPin: store.get('admin_pin', ''),
+  summary: null, summaryAt: null,
+  listFilter: 'all',
+  installEvt: null,
+  admin: { tab:'requests', data:null }
+};
+const isAdmin = () => !!app.adminPin;
+const canSummary = () => isAdmin() || app.access.status === 'Accepted';
+const statusOf = k => (app.sections[k] && app.sections[k].status) || STATUS.NS;
+
+/* ---------- settings: theme & size ---------- */
+function applyPrefs(){
+  const p = store.get('prefs', { theme:'system', size:'normal' });
+  const r = document.documentElement;
+  if (p.theme === 'system') r.removeAttribute('data-theme'); else r.setAttribute('data-theme', p.theme);
+  if (p.size === 'large') r.setAttribute('data-size', 'large'); else r.removeAttribute('data-size');
+  return p;
+}
+applyPrefs();
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+function go(view){
+  if (view === 'summary' && !canSummary()) view = 'workplace';
+  app.view = view;
+  ['workplace','summary','list'].forEach(v => $('#view-' + v).classList.toggle('hidden', v !== view));
+  document.querySelectorAll('nav.bottom button').forEach(b => b.classList.toggle('on', b.dataset.view === view));
+  window.scrollTo({ top:0 });
+  if (view === 'list') renderList();
+  if (view === 'summary') loadSummary();
+}
+document.querySelectorAll('nav.bottom button').forEach(b => b.addEventListener('click', () => go(b.dataset.view)));
+
+function updateNav(){
+  const btn = $('#navSummary'), show = canSummary();
+  if (show && btn.classList.contains('hidden')){ btn.classList.remove('hidden'); btn.classList.add('reveal'); setTimeout(() => btn.classList.remove('reveal'), 700); }
+  if (!show){ btn.classList.add('hidden'); if (app.view === 'summary') go('workplace'); }
+  const pill = $('#modePill');
+  if (isAdmin()){ pill.textContent = 'ADMIN'; pill.classList.remove('hidden'); }
+  else if (DEMO){ pill.textContent = 'DEMO'; pill.classList.remove('hidden'); }
+  else pill.classList.add('hidden');
+}
+
+/* =========================================================
+   DATA REFRESH
+   ========================================================= */
+let refreshing = false;
+async function refresh(silent){
+  if (refreshing) return; refreshing = true;
+  const before = app.access.status;
+  try{
+    const r = await api('state');
+    app.sections = r.sections || {}; app.access = r.access || { status:'none' };
+    store.set('cache_sections', app.sections); store.set('cache_access', app.access);
+    $('#offlineBar').classList.add('hidden');
+    if (before !== app.access.status && before !== 'none' && before){
+      if (app.access.status === 'Accepted') toast('Na-approve na ang iyong access! Makikita mo na ang Summary.', 'ok');
+      if (app.access.status === 'Declined') toast('Hindi naaprubahan ang iyong access request.', 'err');
+      if (app.access.status === 'Revoked') toast('Binawi ng admin ang iyong Summary access.', 'err');
+    }
+  }catch(e){
+    if (String(e.message).startsWith('OFFLINE')) $('#offlineBar').classList.remove('hidden');
+    else if (!silent) toast(e.message, 'err');
+  }finally{ refreshing = false; }
+  updateNav();
+  renderSecHead();
+  if (app.view === 'list') renderList();
+  if (app.view === 'summary') loadSummary(true);
+}
+
+/* =========================================================
+   WORKPLACE
+   ========================================================= */
+const gradeSel = $('#gradeSel'), sectionSel = $('#sectionSel');
+GRADES.forEach(g => gradeSel.insertAdjacentHTML('beforeend', `<option value="${g}">Grade ${g}</option>`));
+gradeSel.addEventListener('change', () => {
+  const g = gradeSel.value;
+  sectionSel.innerHTML = g ? '<option value="">Pumili ng section/strand…</option>' + SECTIONS[g].map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('')
+                           : '<option value="">Pumili muna ng grade</option>';
+  sectionSel.disabled = !g;
+  store.set('last_sel', { g, s:'' });
+  renderSecHead(); renderWorkForm();
+});
+sectionSel.addEventListener('change', () => {
+  store.set('last_sel', { g:gradeSel.value, s:sectionSel.value });
+  renderSecHead(); renderWorkForm();
+});
+const curKey = () => gradeSel.value && sectionSel.value ? gradeSel.value + '|' + sectionSel.value : '';
+
+function badge(st){ const u = STATUS_UI[st] || STATUS_UI[STATUS.NS]; return `<span class="badge ${u.badge}">${esc(st)}</span>`; }
+
+function renderSecHead(){
+  const k = curKey(), el = $('#secHead');
+  if (!k){ el.innerHTML = ''; return; }
+  const { g, s } = keyLabel(k), st = statusOf(k), info = app.sections[k] || {};
+  el.innerHTML = `<div class="sec-head"><div><b>${esc(s)}</b><small>Grade ${esc(g)}${info.submittedAt ? ' · ' + esc(when(info.submittedAt)) : ''}</small></div>${badge(st)}</div>`;
+  // kapag nagbago ang status (hal. naisumite ng ibang device), i-update ang form
+  const wf = $('#workForm');
+  if (wf.dataset.key === k && wf.dataset.status !== st) renderWorkForm();
+}
+
+/* drafts per section */
+const drafts = () => store.get('drafts', {});
+function getDraft(k){ return drafts()[k] || { president: store.get('my_name',''), adviser:'', contact:'', students:[] }; }
+function saveDraft(k, d){ const all = drafts(); all[k] = d; store.set('drafts', all); }
+let draft = null, sexPick = 'M';
+
+function renderWorkForm(){
+  const k = curKey(), wf = $('#workForm');
+  wf.dataset.key = k;
+  if (!k){
+    wf.dataset.status = '';
+    wf.innerHTML = `<div class="card empty"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/><path d="M2 21c0-3 1.9-5.5 5.1-6.1"/></svg><div>Pumili ng <b>Grade Level</b> at <b>Section/Strand</b> para makapagsimula.</div></div>`;
+    return;
+  }
+  const st = statusOf(k); wf.dataset.status = st;
+  const { g, s } = keyLabel(k);
+  if (st !== STATUS.NS){
+    const mine = store.get('my_subs', {})[k];
+    wf.innerHTML = `<div class="card">
+      <h3>Status ng Pagsusumite</h3>
+      <div class="locked"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <p>Naisumite na ang student list ng <b>${esc(s)}</b> (Grade ${esc(g)}). Para maiwasan ang dobleng submission, hindi na ito puwedeng isumite ulit.<br><br>Kung may kailangang itama, makipag-ugnayan sa YES-O adviser/admin para mabuksan ulit ang section.</p></div>
+      ${mine ? `<div class="tools"><button class="btn ghost block" id="viewMine">Tingnan ang naisumite kong listahan (${mine.students.length})</button></div>` : ''}
+    </div>`;
+    if (mine) $('#viewMine').onclick = () => showStudentsModal(`${s} · Grade ${g}`, mine.students, mine);
+    return;
+  }
+
+  draft = getDraft(k);
+  wf.innerHTML = `
+  <div class="card">
+    <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Impormasyon ng Section</h3>
+    <div class="field"><label class="fl" for="fPres">Pangalan ng President *</label><input type="text" id="fPres" autocomplete="name" placeholder="hal. Juan D. Dela Cruz" value="${esc(draft.president)}"></div>
+    <div class="row2">
+      <div class="field"><label class="fl" for="fAdv">Class Adviser</label><input type="text" id="fAdv" placeholder="Opsyonal" value="${esc(draft.adviser)}"></div>
+      <div class="field"><label class="fl" for="fCon">Contact No.</label><input type="tel" id="fCon" inputmode="tel" placeholder="Opsyonal" value="${esc(draft.contact)}"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Student List</h3>
+    <div class="seg" id="modeSeg" style="margin-bottom:12px">
+      <button data-m="one" class="on">Isa-isa</button><button data-m="bulk">I-paste ang listahan</button>
+    </div>
+    <div id="modeOne">
+      <div class="adder">
+        <input type="text" id="sName" placeholder="Apelyido, Pangalan M.I." autocomplete="off" enterkeyhint="done" aria-label="Pangalan ng estudyante">
+        <div class="seg" id="sexSeg"><button data-x="M" class="${sexPick==='M'?'on':''}">M</button><button data-x="F" class="${sexPick==='F'?'on':''}">F</button></div>
+        <button class="btn" id="addBtn" aria-label="Idagdag"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+      <p class="hint">Pindutin ang + o Enter para idagdag. Ang M = Male, F = Female.</p>
+    </div>
+    <div id="modeBulk" class="hidden">
+      <textarea id="bulkTxt" placeholder="Isang pangalan bawat linya. Puwedeng lagyan ng kasarian sa dulo:&#10;Dela Cruz, Juan A., M&#10;Santos, Maria B., F"></textarea>
+      <div class="row2" style="margin-top:8px">
+        <select id="bulkSex" aria-label="Kasarian kung walang nakalagay"><option value="">Kasarian kung wala: —</option><option value="M">Kung wala: M</option><option value="F">Kung wala: F</option></select>
+        <button class="btn" id="bulkAdd">Idagdag lahat</button>
+      </div>
+    </div>
+
+    <div class="counts" id="counts"></div>
+    <ul class="slist" id="slist"></ul>
+    <div class="tools">
+      <button class="btn line sm" id="sortBtn">Ayusin A–Z</button>
+      <button class="btn line sm" id="clearBtn">Burahin lahat</button>
+    </div>
+    <p class="hint">Awtomatikong nase-save ang draft sa device na ito hangga't hindi pa naisusumite.</p>
+  </div>
+
+  <button class="btn block grad-btn" id="submitBtn" style="min-height:56px;font-size:1.05rem">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+    Isumite ang Student List
+  </button>`;
+
+  const persist = () => saveDraft(k, draft);
+  $('#fPres').oninput = e => { draft.president = e.target.value; persist(); };
+  $('#fAdv').oninput = e => { draft.adviser = e.target.value; persist(); };
+  $('#fCon').oninput = e => { draft.contact = e.target.value; persist(); };
+  $('#modeSeg').onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    $('#modeSeg').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    $('#modeOne').classList.toggle('hidden', b.dataset.m !== 'one');
+    $('#modeBulk').classList.toggle('hidden', b.dataset.m !== 'bulk');
+  };
+  $('#sexSeg').onclick = e => {
+    const b = e.target.closest('button'); if (!b) return; sexPick = b.dataset.x;
+    $('#sexSeg').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  };
+  const addOne = () => {
+    const n = cleanName($('#sName').value); if (!n) return;
+    if (draft.students.some(x => x.name.toLowerCase() === n.toLowerCase())){ toast('Nasa listahan na si ' + n + '.', 'err'); return; }
+    draft.students.push({ name:n, sex:sexPick }); persist(); $('#sName').value = ''; $('#sName').focus(); renderStudents();
+  };
+  $('#addBtn').onclick = addOne;
+  $('#sName').onkeydown = e => { if (e.key === 'Enter'){ e.preventDefault(); addOne(); } };
+  $('#bulkAdd').onclick = () => {
+    const def = $('#bulkSex').value; let added = 0, dup = 0;
+    $('#bulkTxt').value.split(/\r?\n/).forEach(line => {
+      let l = cleanName(line.replace(/^\s*\d+[\.\)]\s*/, '')); if (!l) return;
+      let sex = def;
+      const m = l.match(/[\s,\t|\-–]+(M|F|MALE|FEMALE|LALAKI|BABAE|L|B)$/i);
+      if (m){ const t = m[1].toUpperCase(); sex = (t === 'M' || t === 'MALE' || t === 'LALAKI' || t === 'L') ? 'M' : 'F'; l = cleanName(l.slice(0, m.index)); }
+      if (!l) return;
+      if (draft.students.some(x => x.name.toLowerCase() === l.toLowerCase())){ dup++; return; }
+      draft.students.push({ name:l, sex }); added++;
+    });
+    persist(); renderStudents(); $('#bulkTxt').value = '';
+    toast(`${added} naidagdag${dup ? ` · ${dup} doble ang nilaktawan` : ''}.`, added ? 'ok' : '');
+  };
+  $('#sortBtn').onclick = () => { draft.students.sort((a,b) => a.name.localeCompare(b.name, 'fil')); persist(); renderStudents(); };
+  $('#clearBtn').onclick = () => {
+    if (!draft.students.length) return;
+    confirmModal('Burahin ang lahat?', `Mabubura ang ${draft.students.length} pangalan sa draft na ito.`, 'Burahin', 'red', () => { draft.students = []; persist(); renderStudents(); });
+  };
+  $('#submitBtn').onclick = () => trySubmit(k);
+  renderStudents();
+}
+
+function renderStudents(){
+  const ul = $('#slist'); if (!ul) return;
+  const st = draft.students, m = st.filter(x => x.sex === 'M').length, f = st.filter(x => x.sex === 'F').length;
+  $('#counts').innerHTML = `<span class="chip">Kabuuan: ${st.length}</span><span class="chip" style="color:var(--blue)">Male: ${m}</span><span class="chip" style="color:#c2185b">Female: ${f}</span>${st.length - m - f ? `<span class="chip">Walang kasarian: ${st.length - m - f}</span>` : ''}`;
+  if (!st.length){ ul.innerHTML = `<li class="empty" style="display:block">Wala pang pangalan sa listahan.</li>`; return; }
+  ul.innerHTML = st.map((x, i) => `<li><span class="n">${i + 1}</span><span class="nm">${esc(x.name)}</span>
+    <button class="sx ${x.sex || 'U'}" data-sx="${i}" aria-label="Palitan ang kasarian">${x.sex || '—'}</button>
+    <button class="rm" data-rm="${i}" aria-label="Alisin si ${esc(x.name)}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></li>`).join('');
+  ul.onclick = e => {
+    const rm = e.target.closest('[data-rm]'), sx = e.target.closest('[data-sx]'), k = curKey();
+    if (rm){ draft.students.splice(+rm.dataset.rm, 1); saveDraft(k, draft); renderStudents(); }
+    if (sx){ const s = draft.students[+sx.dataset.sx]; s.sex = s.sex === 'M' ? 'F' : s.sex === 'F' ? '' : 'M'; saveDraft(k, draft); renderStudents(); }
+  };
+}
+
+function trySubmit(k){
+  const { g, s } = keyLabel(k);
+  if (!cleanName(draft.president)){ toast('Ilagay muna ang pangalan ng President.', 'err'); $('#fPres').focus(); return; }
+  if (!draft.students.length){ toast('Wala pang laman ang student list.', 'err'); return; }
+  const noSex = draft.students.filter(x => !x.sex).length;
+  confirmModal('Isumite na ang listahan?',
+    `<b>${esc(s)}</b> · Grade ${esc(g)}<br>${draft.students.length} estudyante${noSex ? ` (${noSex} walang kasarian)` : ''}<br><br>Pagkatapos isumite, hindi na ito mababago o maisusumite ulit maliban kung buksan ito ng admin.`,
+    'Isumite', 'green', async (btn) => {
+      btn.innerHTML = '<span class="spin"></span>'; btn.disabled = true;
+      try{
+        const payload = { grade:g, section:s, president:draft.president, adviser:draft.adviser, contact:draft.contact, students:draft.students };
+        const r = await api('submit', payload);
+        const mine = store.get('my_subs', {}); mine[k] = Object.assign({}, payload, { submittedAt:r.submittedAt }); store.set('my_subs', mine);
+        const all = drafts(); delete all[k]; store.set('drafts', all);
+        if (!store.get('my_name')) store.set('my_name', cleanName(draft.president));
+        app.sections[k] = { status:STATUS.SUB, submittedAt:r.submittedAt }; store.set('cache_sections', app.sections);
+        closeModal(); toast('Naisumite na! Salamat, ' + cleanName(draft.president).split(' ')[0] + '.', 'ok');
+        renderSecHead(); renderWorkForm(); refresh(true);
+      }catch(e){
+        closeModal();
+        if (String(e.message).startsWith('DUPLICATE')){ toast(e.message.replace('DUPLICATE: ',''), 'err'); refresh(true); }
+        else toast(e.message.replace('OFFLINE: ',''), 'err');
+      }
+    }, true);
+}
+
+/* =========================================================
+   LIST
+   ========================================================= */
+const FILTERS = [['all','Lahat'],['green','🟢 Submitted'],['yellow','🟡 Pending'],['red','🔴 Not Submitted']];
+$('#listFilters').innerHTML = FILTERS.map(([v,l]) => `<button class="fchip ${v==='all'?'on':''}" data-f="${v}">${l}</button>`).join('');
+$('#listFilters').onclick = e => {
+  const b = e.target.closest('[data-f]'); if (!b) return; app.listFilter = b.dataset.f;
+  $('#listFilters').querySelectorAll('.fchip').forEach(x => x.classList.toggle('on', x === b)); renderList();
+};
+$('#listSearch').oninput = () => renderList();
+function renderList(){
+  const q = $('#listSearch').value.trim().toLowerCase(), f = app.listFilter;
+  let html = '';
+  GRADES.forEach(g => {
+    const rows = SECTIONS[g].map(s => { const k = g + '|' + s, st = statusOf(k); return { s, st, c:STATUS_UI[st].color }; })
+      .filter(r => (f === 'all' || r.c === f) && (!q || r.s.toLowerCase().includes(q)));
+    if (!rows.length) return;
+    const done = SECTIONS[g].filter(s => statusOf(g + '|' + s) !== STATUS.NS).length;
+    html += `<div class="gblock"><div class="ghead"><h3>GRADE ${g}</h3><span>${done}/${SECTIONS[g].length} nakapagsumite</span></div><div class="srows">` +
+      rows.map(r => `<div class="srow"><span class="dot ${r.c}"></span><span class="nm">${esc(r.s)}</span>${badge(r.st)}</div>`).join('') + `</div></div>`;
+  });
+  $('#listBody').innerHTML = html || `<div class="card empty">Walang tugmang section.</div>`;
+}
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+let sumLoading = false;
+async function loadSummary(silent){
+  if (!canSummary()) return;
+  if (!app.summary && !silent) $('#summaryBody').innerHTML = `<div class="card empty"><span class="spin" style="border-color:var(--line);border-top-color:var(--green);display:inline-block"></span><div style="margin-top:8px">Kinukuha ang datos…</div></div>`;
+  if (sumLoading) return; sumLoading = true;
+  try{
+    const r = await api('summary', isAdmin() ? { pin:app.adminPin } : {});
+    app.summary = r.sections || {}; app.summaryAt = new Date();
+    renderSummary();
+  }catch(e){
+    if (!app.summary) $('#summaryBody').innerHTML = `<div class="card empty">${esc(e.message.replace('OFFLINE: ',''))}</div>`;
+    else if (!silent) toast(e.message.replace('OFFLINE: ',''), 'err');
+    if (/Wala kang access/.test(e.message)) refresh(true);
+  }finally{ sumLoading = false; }
+}
+function renderSummary(){
+  const S = app.summary || {}, total = ALL_KEYS.length;
+  const info = k => S[k] || { status:STATUS.NS, studentCount:0, male:0, female:0 };
+  const subKeys = ALL_KEYS.filter(k => info(k).status !== STATUS.NS);
+  const stud = subKeys.reduce((a,k) => a + (+info(k).studentCount || 0), 0);
+  const male = subKeys.reduce((a,k) => a + (+info(k).male || 0), 0);
+  const female = subKeys.reduce((a,k) => a + (+info(k).female || 0), 0);
+  const apKeys = subKeys.filter(k => info(k).status === STATUS.AP);
+  const apStud = apKeys.reduce((a,k) => a + (+info(k).studentCount || 0), 0);
+  const prCount = subKeys.filter(k => info(k).status === STATUS.PR).length;
+  const pct = Math.round(subKeys.length / total * 100);
+  const C = 2 * Math.PI * 46;
+
+  let html = `
+  <div class="hero">
+    <div class="ring"><svg viewBox="0 0 108 108"><circle cx="54" cy="54" r="46" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="12"/>
+      <circle cx="54" cy="54" r="46" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C * (1 - pct/100)}" style="transition:stroke-dashoffset .8s ease"/></svg>
+      <div class="val">${pct}%</div></div>
+    <div><h3>Submission Progress</h3><p>${subKeys.length} sa ${total} na section/strand ang nakapagsumite na ng student list.</p></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><small>Sections Submitted</small><b>${subKeys.length}<em> / ${total}</em></b><div class="sub">${apKeys.length} naaprubahan · ${prCount} pending</div></div>
+    <div class="kpi"><small>Not Yet Submitted</small><b style="color:var(--red)">${total - subKeys.length}</b><div class="sub">section/strand</div></div>
+    <div class="kpi"><small>Students Submitted</small><b>${fmt(stud)}</b><div class="sub">M ${fmt(male)} · F ${fmt(female)}</div></div>
+    <div class="kpi"><small>Students sa Naaprubahan</small><b style="color:var(--blue)">${fmt(apStud)}</b><div class="sub">mula sa ${apKeys.length} section</div></div>
+  </div>
+  <div class="updated"><span class="live"></span>Live · Huling update: ${app.summaryAt.toLocaleTimeString('fil-PH', { hour:'numeric', minute:'2-digit', second:'2-digit' })}</div>`;
+
+  GRADES.forEach((g, gi) => {
+    const keys = SECTIONS[g].map(s => g + '|' + s);
+    const sk = keys.filter(k => info(k).status !== STATUS.NS), nk = keys.filter(k => info(k).status === STATUS.NS);
+    const gs = sk.reduce((a,k) => a + (+info(k).studentCount || 0), 0), gp = Math.round(sk.length / keys.length * 100);
+    html += `<details class="gsum" >
+      <summary><div class="gtop"><b>Grade ${g}</b><span>${sk.length}/${keys.length} sections · ${gp}%</span></div>
+        <div class="bar"><i style="width:${gp}%"></i></div>
+        <div class="gmeta"><span>${fmt(gs)} estudyante</span><span>${nk.length ? nk.length + ' hindi pa' : 'Kumpleto ✓'}</span></div></summary>
+      <div class="gbody">
+        <h4>Nakapagsumite (${sk.length})</h4>
+        <div class="tags">${sk.length ? sk.map(k => { const i = info(k); return `<span class="tag ${i.status === STATUS.PR ? 'pr' : 'ok'}">${esc(keyLabel(k).s)} · ${i.studentCount}</span>`; }).join('') : '<span class="hint">Wala pa</span>'}</div>
+        <h4>Hindi pa nakapagsumite (${nk.length})</h4>
+        <div class="tags">${nk.length ? nk.map(k => `<span class="tag no">${esc(keyLabel(k).s)}</span>`).join('') : '<span class="hint">Lahat ay nakapagsumite na 🎉</span>'}</div>
+      </div></details>`;
+  });
+  // panatilihing bukas ang mga naka-expand na grade
+  const open = [...document.querySelectorAll('#summaryBody details')].map(d => d.open);
+  $('#summaryBody').innerHTML = html;
+  document.querySelectorAll('#summaryBody details').forEach((d, i) => { if (open[i]) d.open = true; });
+}
+
+/* =========================================================
+   MENU (⋮)
+   ========================================================= */
+const ico = {
+  key:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg>',
+  gear:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>',
+  share:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>',
+  shield:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>',
+  dl:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>',
+  refresh:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/></svg>'
+};
+const ACCESS_TXT = { none:'Para makita ang Summary', Pending:'Hinihintay ang desisyon ng admin', Accepted:'Approved ✓ — may Summary access ka', Declined:'Hindi naaprubahan · puwedeng humiling ulit', Revoked:'Binawi ang access · puwedeng humiling ulit' };
+function openMenu(){
+  const st = app.access.status || 'none';
+  $('#menu').innerHTML = `
+    <button data-act="request">${ico.key}<span>Request Access<span class="msub">${isAdmin() ? 'Admin ka — may buong access' : ACCESS_TXT[st] || ''}</span></span></button>
+    <button data-act="settings">${ico.gear}<span>Settings</span></button>
+    <button data-act="share">${ico.share}<span>Share</span></button>
+    ${isAdmin() ? `<hr><button data-act="admin">${ico.shield}<span>Admin Panel<span class="msub">Access requests at submissions</span></span></button>` : ''}
+    ${app.installEvt ? `<hr><button data-act="install">${ico.dl}<span>I-install ang YESphere<span class="msub">Idagdag sa home screen</span></span></button>` : ''}
+    <hr><button data-act="refresh">${ico.refresh}<span>I-refresh ang datos</span></button>`;
+  $('#menu').classList.remove('hidden'); $('#scrim').classList.remove('hidden');
+}
+function closeMenu(){ $('#menu').classList.add('hidden'); $('#scrim').classList.add('hidden'); }
+$('#menuBtn').onclick = () => $('#menu').classList.contains('hidden') ? openMenu() : closeMenu();
+$('#scrim').onclick = closeMenu;
+$('#menu').onclick = e => {
+  const b = e.target.closest('[data-act]'); if (!b) return; closeMenu();
+  ({ request:openRequest, settings:openSettings, share:doShare, admin:openAdmin, install:doInstall,
+     refresh:() => { refresh(); toast('Ni-refresh ang datos.'); } })[b.dataset.act]();
+};
+
+/* ---------- modal helpers ---------- */
+function openModal(html){
+  const m = $('#modal'); m.querySelector('.sheet').innerHTML = '<div class="grip"></div>' + html; m.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){ $('#modal').classList.add('hidden'); if ($('#admin').classList.contains('hidden')) document.body.style.overflow = ''; }
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+function confirmModal(title, body, okText, color, onOk, keepOpen){
+  openModal(`<h3>${title}</h3><p>${body}</p><div class="acts"><button class="btn line" id="mCancel">Kanselahin</button><button class="btn ${color === 'red' ? 'red' : color === 'blue' ? 'blue' : ''}" id="mOk">${okText}</button></div>`);
+  $('#mCancel').onclick = closeModal;
+  $('#mOk').onclick = () => { if (!keepOpen) closeModal(); onOk($('#mOk')); };
+}
+
+/* ---------- Request Access ---------- */
+function openRequest(){
+  if (isAdmin()){ toast('Admin ka na — kumpleto ang iyong access.'); return; }
+  const st = app.access.status || 'none';
+  if (st === 'Pending' || st === 'Accepted'){
+    openModal(`<h3>Access Request</h3>
+      <div class="sec-head" style="margin-bottom:8px"><div><b>${esc(app.access.name || '')}</b><small>Status ng iyong request</small></div>
+      <span class="badge ${st === 'Accepted' ? 'b-green' : 'b-yellow'}">${st === 'Accepted' ? 'Accepted' : 'Pending'}</span></div>
+      <p>${st === 'Accepted' ? 'May access ka na sa Summary. Makikita mo ito sa ibabang navigation.' : 'Naipadala na ang iyong request. Lalabas ang Summary icon kapag in-accept ito ng admin.'}</p>
+      <div class="acts"><button class="btn line" id="mClose">Isara</button>${st === 'Pending' ? '<button class="btn" id="mCheck">I-check ang status</button>' : ''}</div>`);
+    $('#mClose').onclick = closeModal;
+    if ($('#mCheck')) $('#mCheck').onclick = async () => { await refresh(); closeModal(); toast(canSummary() ? 'Approved na!' : 'Pending pa rin ang request.'); };
+    return;
+  }
+  const sel = store.get('last_sel', { g:'', s:'' });
+  openModal(`<h3>Request Access</h3>
+    <p>Humiling ng access para makita ang overall <b>Summary</b>. Ang admin ang mag-a-accept o magde-decline.${st === 'Declined' || st === 'Revoked' ? '<br><br><span class="badge b-red">Huling request: ' + (st === 'Declined' ? 'Declined' : 'Revoked') + '</span>' : ''}</p>
+    <div class="field"><label class="fl" for="rName">Buong pangalan *</label><input type="text" id="rName" value="${esc(store.get('my_name',''))}" placeholder="hal. Maria L. Santos"></div>
+    <div class="field"><label class="fl" for="rRole">Posisyon / Tungkulin *</label>
+      <select id="rRole"><option>Section/Strand President</option><option>YES-O Officer</option><option>YES-O Adviser / Teacher</option><option>Class Adviser</option><option>School Head / Administrator</option><option>Iba pa</option></select></div>
+    <div class="row2">
+      <div class="field"><label class="fl" for="rGrade">Grade</label><select id="rGrade"><option value="">—</option>${GRADES.map(g => `<option ${sel.g===g?'selected':''} value="${g}">Grade ${g}</option>`).join('')}</select></div>
+      <div class="field"><label class="fl" for="rSec">Section/Strand</label><select id="rSec"><option value="">—</option></select></div>
+    </div>
+    <div class="field"><label class="fl" for="rWhy">Dahilan</label><textarea id="rWhy" style="min-height:90px" placeholder="Bakit kailangan mong makita ang Summary?"></textarea></div>
+    <div class="acts"><button class="btn line" id="mCancel">Kanselahin</button><button class="btn" id="mSend">Ipadala</button></div>`);
+  const fillSec = () => { const g = $('#rGrade').value; $('#rSec').innerHTML = '<option value="">—</option>' + (g ? SECTIONS[g].map(s => `<option ${sel.s===s?'selected':''}>${esc(s)}</option>`).join('') : ''); };
+  $('#rGrade').onchange = fillSec; fillSec();
+  $('#mCancel').onclick = closeModal;
+  $('#mSend').onclick = async () => {
+    const name = cleanName($('#rName').value);
+    if (!name){ toast('Ilagay ang iyong pangalan.', 'err'); $('#rName').focus(); return; }
+    const b = $('#mSend'); b.innerHTML = '<span class="spin"></span>'; b.disabled = true;
+    try{
+      const r = await api('requestAccess', { name, role:$('#rRole').value, grade:$('#rGrade').value, section:$('#rSec').value, reason:$('#rWhy').value });
+      app.access = r.access; store.set('cache_access', app.access); store.set('my_name', name);
+      closeModal(); toast('Naipadala ang request! Hintayin ang approval ng admin.', 'ok');
+    }catch(e){ b.textContent = 'Ipadala'; b.disabled = false; toast(e.message.replace('OFFLINE: ',''), 'err'); }
+  };
+}
+
+/* ---------- Settings ---------- */
+function openSettings(){
+  const p = applyPrefs();
+  openModal(`<h3>Settings</h3>
+    <div class="field"><label class="fl" for="sName">Iyong pangalan</label><input type="text" id="sName" value="${esc(store.get('my_name',''))}" placeholder="Gagamitin sa mga form"></div>
+    <div class="optrow"><b>Tema</b><div class="seg" id="sTheme">${[['system','Auto'],['light','Light'],['dark','Dark']].map(([v,l]) => `<button data-v="${v}" class="${p.theme===v?'on':''}">${l}</button>`).join('')}</div></div>
+    <div class="optrow"><b>Laki ng teksto</b><div class="seg" id="sSize">${[['normal','Normal'],['large','Malaki']].map(([v,l]) => `<button data-v="${v}" class="${p.size===v?'on':''}">${l}</button>`).join('')}</div></div>
+    <div class="card" style="margin:12px 0;padding:12px 14px;box-shadow:none">
+      <h3 style="margin-bottom:4px">${ico.shield} Admin</h3>
+      ${isAdmin() ? `<p style="margin:0 0 10px">Naka-login bilang admin sa device na ito.</p><button class="btn red sm" id="sLogout">Mag-logout bilang admin</button>`
+        : `<p style="margin:0 0 10px">Para lang sa app creator/YES-O adviser.${DEMO ? ' <b>Demo PIN: 1234</b>' : ''}</p>
+           <div style="display:flex;gap:8px"><input type="password" id="sPin" inputmode="numeric" placeholder="Admin PIN" autocomplete="off"><button class="btn blue" id="sLogin">Login</button></div>`}
+    </div>
+    <div>
+      <div class="kv"><span>Koneksyon</span><b>${DEMO ? 'Demo mode (device lang)' : 'Online database'}</b></div>
+      <div class="kv"><span>Device ID</span><code>${esc(DEVICE_ID.slice(0,8))}…</code></div>
+      <div class="kv"><span>Bersyon</span><b>YESphere 1.0 · S.Y. 2026–2027</b></div>
+    </div>
+    <div class="acts"><button class="btn line" id="sClear">Burahin ang local data</button><button class="btn" id="sDone">Tapos</button></div>`);
+  $('#sName').onchange = e => store.set('my_name', cleanName(e.target.value));
+  const seg = (id, key) => $(id).onclick = e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const pr = store.get('prefs', { theme:'system', size:'normal' }); pr[key] = b.dataset.v; store.set('prefs', pr); applyPrefs();
+    $(id).querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+  };
+  seg('#sTheme', 'theme'); seg('#sSize', 'size');
+  $('#sDone').onclick = closeModal;
+  $('#sClear').onclick = () => confirmModal('Burahin ang local data?', 'Mabubura ang mga draft at naka-cache na datos sa device na ito. Hindi maaapektuhan ang mga naisumite na sa server.', 'Burahin', 'red', () => {
+    ['drafts','my_subs','cache_sections','cache_access','my_name'].forEach(k => store.del(k)); location.reload();
+  });
+  if (isAdmin()) $('#sLogout').onclick = () => { app.adminPin = ''; store.del('admin_pin'); updateNav(); closeModal(); toast('Naka-logout na bilang admin.'); };
+  else {
+    const login = async () => {
+      const pin = $('#sPin').value.trim(); if (!pin) return;
+      const b = $('#sLogin'); b.innerHTML = '<span class="spin"></span>'; b.disabled = true;
+      try{ await api('adminLogin', { pin }); app.adminPin = pin; store.set('admin_pin', pin); updateNav(); closeModal(); toast('Welcome, Admin!', 'ok'); }
+      catch(e){ b.textContent = 'Login'; b.disabled = false; toast(e.message.replace('OFFLINE: ',''), 'err'); }
+    };
+    $('#sLogin').onclick = login; $('#sPin').onkeydown = e => { if (e.key === 'Enter') login(); };
+  }
+}
+
+/* ---------- Share ---------- */
+async function doShare(){
+  const url = CONFIG.APP_URL || location.href.split('#')[0];
+  const data = { title:'YESphere — YES-O', text:'YESphere: Isumite ang student list ng inyong section para sa YES-O S.Y. 2026–2027.', url };
+  if (navigator.share){ try{ await navigator.share(data); return; }catch(e){ if (e.name === 'AbortError') return; } }
+  try{ await navigator.clipboard.writeText(url); toast('Nakopya ang link ng app!', 'ok'); }
+  catch(e){ openModal(`<h3>Share</h3><p>Kopyahin ang link na ito:</p><input type="text" readonly value="${esc(url)}" onclick="this.select()"><div class="acts"><button class="btn" onclick="closeModal()">Isara</button></div>`); }
+}
+
+/* ---------- Install ---------- */
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); app.installEvt = e; });
+async function doInstall(){ if (!app.installEvt) return; app.installEvt.prompt(); await app.installEvt.userChoice; app.installEvt = null; }
+window.addEventListener('appinstalled', () => toast('Na-install na ang YESphere!', 'ok'));
+
+/* =========================================================
+   ADMIN PANEL
+   ========================================================= */
+async function openAdmin(){
+  $('#admin').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+  renderAdmin(); await loadAdmin();
+}
+function closeAdmin(){ $('#admin').classList.add('hidden'); document.body.style.overflow = ''; }
+async function loadAdmin(){
+  try{ app.admin.data = await api('adminData', { pin:app.adminPin }); renderAdmin(); }
+  catch(e){
+    toast(e.message.replace('OFFLINE: ',''), 'err');
+    if (/Mali ang Admin PIN/.test(e.message)){ app.adminPin = ''; store.del('admin_pin'); updateNav(); closeAdmin(); }
+  }
+}
+function renderAdmin(){
+  const d = app.admin.data, tab = app.admin.tab;
+  const reqs = d ? d.requests : [], subs = d ? d.submissions : [];
+  const pending = reqs.filter(r => r.status === 'Pending');
+  // pinakahuling request bawat device lang ang may bisa
+  const latest = {}; reqs.forEach(r => latest[r.deviceId] = r);
+  const approved = Object.values(latest).filter(r => r.status === 'Accepted');
+  const history = reqs.filter(r => r.status !== 'Pending').slice().reverse();
+  const toReview = subs.filter(s => s.status === STATUS.SUB || s.status === STATUS.PR).length;
+
+  let body = '';
+  if (!d) body = `<div class="card empty"><span class="spin" style="border-color:var(--line);border-top-color:var(--blue);display:inline-block"></span><div style="margin-top:8px">Kinukuha ang admin data…</div></div>`;
+  else if (tab === 'requests'){
+    body = pending.length ? pending.map(r => reqCard(r, `<button class="btn red sm" data-dec="Declined" data-id="${esc(r.id)}">Decline</button><button class="btn sm" data-dec="Accepted" data-id="${esc(r.id)}">Accept</button>`)).join('')
+      : `<div class="card empty">Walang pending na access request.</div>`;
+  } else if (tab === 'users'){
+    body = approved.length ? approved.map(r => reqCard(r, `<button class="btn line sm" data-dec="Revoked" data-id="${esc(r.id)}" style="color:var(--red)">Revoke access</button>`)).join('')
+      : `<div class="card empty">Wala pang approved na user.</div>`;
+    if (history.length) body += `<h3 style="margin:18px 4px 8px;font-size:.9rem;color:var(--muted);letter-spacing:.5px">KASAYSAYAN NG MGA DESISYON</h3>` +
+      history.map(r => `<div class="kv card" style="margin-bottom:6px;padding:10px 14px"><span><b style="color:var(--text)">${esc(r.name)}</b><br><small>${esc(r.role || '')} · ${esc(when(r.decidedAt))}</small></span><span class="badge ${r.status === 'Accepted' ? 'b-green' : 'b-red'}">${esc(r.status)}</span></div>`).join('');
+  } else {
+    const byKey = {}; subs.forEach(s => byKey[s.key] = s);
+    body = `<div class="tools" style="margin:0 0 12px"><button class="btn blue sm" id="csvBtn">${ico.dl} I-download lahat (CSV)</button></div>` +
+    GRADES.map(g => `<div class="gblock"><div class="ghead"><h3>GRADE ${g}</h3><span>${SECTIONS[g].filter(s => byKey[g+'|'+s] && byKey[g+'|'+s].status !== STATUS.NS).length}/${SECTIONS[g].length}</span></div><div class="srows">` +
+      SECTIONS[g].map(s => { const k = g + '|' + s, x = byKey[k], st = x ? x.status : STATUS.NS;
+        return `<div class="srow" ${x ? `data-open="${esc(k)}" style="cursor:pointer"` : ''}><span class="dot ${STATUS_UI[st].color}"></span><span class="nm">${esc(s)}${x ? `<br><small style="color:var(--muted);font-weight:500">${x.studentCount} estudyante · ${esc(x.president)}</small>` : ''}</span>${badge(st)}</div>`; }).join('') + `</div></div>`).join('');
+  }
+
+  $('#admin').innerHTML = `<header><div class="ahead">
+      <button class="icon-btn" id="aBack" aria-label="Bumalik"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <b>Admin Panel</b>
+      <button class="icon-btn" id="aRef" aria-label="I-refresh">${ico.refresh}</button></div>
+    <div class="tabs">
+      <button data-t="requests" class="${tab==='requests'?'on':''}">Requests${pending.length ? `<span class="cnt">${pending.length}</span>` : ''}</button>
+      <button data-t="users" class="${tab==='users'?'on':''}">Approved Users</button>
+      <button data-t="subs" class="${tab==='subs'?'on':''}">Submissions${toReview ? `<span class="cnt">${toReview}</span>` : ''}</button>
+    </div></header>
+    <main style="padding-bottom:40px">${body}</main>`;
+
+  $('#aBack').onclick = closeAdmin;
+  $('#aRef').onclick = () => { loadAdmin(); toast('Ni-refresh.'); };
+  $('#admin .tabs').onclick = e => { const b = e.target.closest('[data-t]'); if (!b) return; app.admin.tab = b.dataset.t; renderAdmin(); };
+  $('#admin main').onclick = e => {
+    const dec = e.target.closest('[data-dec]'), op = e.target.closest('[data-open]');
+    if (dec) decide(dec.dataset.id, dec.dataset.dec, dec);
+    if (op) openSubmission(op.dataset.open);
+  };
+  if ($('#csvBtn')) $('#csvBtn').onclick = exportCSV;
+}
+function reqCard(r, acts){
+  return `<div class="card req"><div class="who"><div><b>${esc(r.name)}</b><div class="meta">${esc(r.role || '')}${r.grade ? ' · Grade ' + esc(r.grade) : ''}${r.section ? ' · ' + esc(r.section) : ''}</div></div>
+    <span class="meta" style="white-space:nowrap">${esc(when(r.requestedAt))}</span></div>
+    ${r.reason ? `<div class="reason">${esc(r.reason)}</div>` : ''}<div class="acts">${acts}</div></div>`;
+}
+async function decide(id, decision, btn){
+  const go2 = async () => {
+    if (btn){ btn.innerHTML = '<span class="spin"></span>'; btn.disabled = true; }
+    try{ await api('adminDecide', { pin:app.adminPin, id, decision }); toast(decision === 'Accepted' ? 'Na-accept ang request.' : decision === 'Declined' ? 'Na-decline ang request.' : 'Na-revoke ang access.', 'ok'); await loadAdmin(); refresh(true); }
+    catch(e){ toast(e.message, 'err'); renderAdmin(); }
+  };
+  if (decision === 'Revoked') confirmModal('I-revoke ang access?', 'Mawawala ang Summary icon sa user na ito.', 'Revoke', 'red', go2); else go2();
+}
+function openSubmission(k){
+  const s = app.admin.data.submissions.find(x => x.key === k); if (!s) return;
+  const { g, sec } = { g:s.grade, sec:s.section };
+  const list = (s.students || []).map((x,i) => `<li><span class="n">${i+1}</span><span class="nm">${esc(x.name)}</span><span class="sx ${x.sex || 'U'}">${x.sex || '—'}</span></li>`).join('');
+  openModal(`<h3>${esc(sec)} · Grade ${esc(g)}</h3>
+    <div style="margin-bottom:10px">${badge(s.status)}</div>
+    <div class="kv"><span>President</span><b>${esc(s.president)}</b></div>
+    ${s.adviser ? `<div class="kv"><span>Adviser</span><b>${esc(s.adviser)}</b></div>` : ''}
+    ${s.contact ? `<div class="kv"><span>Contact</span><b>${esc(s.contact)}</b></div>` : ''}
+    <div class="kv"><span>Naisumite</span><b>${esc(when(s.submittedAt))}</b></div>
+    <div class="kv"><span>Bilang</span><b>${s.studentCount} (M ${s.male} · F ${s.female})</b></div>
+    <ul class="slist" style="margin:10px 0;max-height:40vh;overflow:auto">${list}</ul>
+    <label class="fl" style="margin-top:12px">Palitan ang status</label>
+    <div class="tools" style="margin-top:0">
+      <button class="btn sm" data-st="${STATUS.AP}" style="flex:1">✓ Aprubahan</button>
+      <button class="btn sm" data-st="${STATUS.PR}" style="flex:1;background:var(--yellow)">Pending Review</button>
+    </div>
+    <div class="tools">
+      <button class="btn line sm" data-st="${STATUS.SUB}" style="flex:1">Ibalik sa Naisumite</button>
+      <button class="btn red sm" data-st="${STATUS.NS}" style="flex:1">Buksan ulit (ipa-resubmit)</button>
+    </div>
+    <div class="acts"><button class="btn line" id="mClose">Isara</button></div>`);
+  $('#mClose').onclick = closeModal;
+  $('#modal .sheet').querySelectorAll('[data-st]').forEach(b => b.onclick = async () => {
+    const st = b.dataset.st;
+    const doIt = async () => {
+      try{ await api('adminSetStatus', { pin:app.adminPin, key:k, status:st }); closeModal(); toast('Status: ' + st, 'ok'); await loadAdmin(); refresh(true); }
+      catch(e){ toast(e.message, 'err'); }
+    };
+    if (st === STATUS.NS) confirmModal('Buksan ulit ang section?', `Magagawang magsumite ulit ng <b>${esc(sec)}</b>. Mapapalitan ang lumang listahan kapag nagsumite sila ulit.`, 'Buksan ulit', 'red', doIt);
+    else doIt();
+  });
+}
+function exportCSV(){
+  const subs = app.admin.data.submissions || [];
+  const q = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const rows = [['Grade','Section/Strand','Status','President','Adviser','Contact','No.','Pangalan ng Estudyante','Kasarian','Petsa ng Pagsusumite']];
+  GRADES.forEach(g => SECTIONS[g].forEach(s => {
+    const x = subs.find(y => y.key === g + '|' + s);
+    if (!x || !x.students || !x.students.length){ rows.push([g, s, x ? x.status : STATUS.NS, x ? x.president : '', '', '', '', '', '', '']); return; }
+    x.students.forEach((st, i) => rows.push([g, s, x.status, x.president, x.adviser, x.contact, i + 1, st.name, st.sex, when(x.submittedAt)]));
+  }));
+  const blob = new Blob(['﻿' + rows.map(r => r.map(q).join(',')).join('\r\n')], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'YESphere_Student_Lists_SY2026-2027.csv';
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  toast('Na-download ang CSV.', 'ok');
+}
+
+/* =========================================================
+   STUDENT LIST VIEW (sariling submission)
+   ========================================================= */
+function showStudentsModal(title, students, meta){
+  openModal(`<h3>${esc(title)}</h3><p>President: <b>${esc(meta.president)}</b> · ${esc(when(meta.submittedAt))}</p>
+    <ul class="slist" style="max-height:55vh;overflow:auto">${students.map((x,i) => `<li><span class="n">${i+1}</span><span class="nm">${esc(x.name)}</span><span class="sx ${x.sex || 'U'}">${x.sex || '—'}</span></li>`).join('')}</ul>
+    <div class="acts"><button class="btn" id="mClose">Isara</button></div>`);
+  $('#mClose').onclick = closeModal;
+}
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+(function boot(){
+  updateNav();
+  renderWorkForm();
+  const last = store.get('last_sel', null);
+  if (last && last.g){
+    gradeSel.value = last.g; gradeSel.dispatchEvent(new Event('change'));
+    if (last.s && SECTIONS[last.g].includes(last.s)){ sectionSel.value = last.s; store.set('last_sel', last); renderSecHead(); renderWorkForm(); }
+  }
+  const t0 = Date.now();
+  const hide = () => setTimeout(() => $('#splash').classList.add('out'), Math.max(0, 1700 - (Date.now() - t0)));
+  refresh(true).finally(hide);
+  setTimeout(() => $('#splash').classList.add('out'), 6000); // safety
+
+  // auto-update: bawat 20s habang bukas ang app
+  setInterval(() => { if (document.visibilityState === 'visible') refresh(true); }, 20000);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') refresh(true); });
+  window.addEventListener('online', () => refresh(true));
+  window.addEventListener('offline', () => $('#offlineBar').classList.remove('hidden'));
+
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+})();
+</script>
+</body>
+</html>
+
+</body></html>
